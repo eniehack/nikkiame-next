@@ -20,6 +20,8 @@ return new class extends Migration
             $table->char('password',97);
             $table->boolean('is_admin')->default(false);
             $table->timestamps();
+            $table->primary('ulid');
+            $table->unique('user_id');
         });
     }
 

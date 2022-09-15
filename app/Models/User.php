@@ -19,8 +19,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
     ];
 
     /**
@@ -30,7 +28,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
@@ -39,6 +36,22 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
+
+    protected $guarded = [
+        'user_id',
+        'password',
+        'ulid',
+        'is_admin',
+    ];
+
+    protected $table = 'users';
+
+    protected $primaryKey = 'ulid';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 }
