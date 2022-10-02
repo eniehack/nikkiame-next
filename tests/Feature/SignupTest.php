@@ -8,6 +8,7 @@ use Tests\TestCase;
 
 class SignupTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      *
@@ -23,7 +24,7 @@ class SignupTest extends TestCase
     public function test_user_data_post()
     {
         $array = [
-            'name' => 'sapmleName',
+            'name' => 'sampleName',
             'pass' => 'samplePassword',
             'uid' => 'uid',
         ];
@@ -39,6 +40,9 @@ class SignupTest extends TestCase
             'pass' => 'samplePassword',
             'uid' => 'uid',
         ];
+
+        $this->post('/signup', $array);
+
         $response = $this->post('/signup', $array);
 
         $response->assertRedirect('/signup');
@@ -74,3 +78,4 @@ class SignupTest extends TestCase
         $resp->assertRedirect('/signup');
     }
 }
+https://vscode.dev/liveshare/3ACA5092AB03752D94EF3C7AC5C7E400B1EE
