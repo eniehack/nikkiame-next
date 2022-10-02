@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
@@ -19,10 +20,11 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+            'user_id' => fake()->unique()->regexify("^[0-9a-z._]{1,20}$"),
+            'password' =>  '$argon2id$v=19$m=65536,t=4,p=1$cnpQRU9JMmZ2cDl0dmM3TQ$TEqRcALmWZfUnnmvodyhTA',
+            "updated_at" => now(),
+            "created_at" => now(),
+            "ulid" => fake()->unique()->regexify("[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}"),
         ];
     }
 
