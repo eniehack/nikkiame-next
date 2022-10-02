@@ -70,7 +70,6 @@ Route::post('/signin',function(Request $request){
     if ($validator->fails()) {
         return redirect('/signin')->withErrors($validator)->withInput();
     }
-
     $pass=$request->string('pass');
     $uid=$request->string('uid');
 
@@ -79,6 +78,11 @@ Route::post('/signin',function(Request $request){
         $request->session()->regenerate();
         $request->session()->put('uid',$uid);
 
+        $user = User::where('user_id', $uid)->first();
+        $request->session()->put('name',$user->name);
+        $request->session()->put('ulid',$user->ulid);
+
+
         return redirect('/');
     }else{
         return redirect('/signin')->withErrors([
@@ -86,4 +90,14 @@ Route::post('/signin',function(Request $request){
             ])->withInput();
     }
 });
+
+Route::get('/', function(Request $request){
+    if($request->session()->has('name')) {
+        return view('timeline', ['name' => $request->session()->get('name')]);
+    } else{
+        return view('welcome');
+    }
+
+});
+
  //https://laravel.com/docs/9.x/authentication#password-confirmation-routing
