@@ -30,7 +30,7 @@ class SignupTest extends TestCase
         ];
         $response = $this->post('/signup', $array);
 
-        $response -> assertStatus(201);
+        $response -> assertRedirect('/signin');
     }
 
     public function test_duplicate_user_data_post()
