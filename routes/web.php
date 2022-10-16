@@ -99,5 +99,26 @@ Route::get('/', function(Request $request){
     }
 
 });
+Route::get('/post',function(Request $request){
+    if($request->session()->has('name')) {
+        return view('post');
+    } else{
+        return redirect('/signin');
+    }
+});
+
+Route::post('/post', function(Request $request){
+    if(!$request->session()->has('name')){
+        return redirect('/signin');
+    }
+    $validator = Validator::make($request->all(), [
+        "content" => ["required"],
+    ]);
+    if($validator -> fails()){
+        return redirect('/post')->withErrors($validator)->withInput();
+    }
+    return response('Created', 201)
+    ->header('Content-Type', 'text/plain');
+});
 
  //https://laravel.com/docs/9.x/authentication#password-confirmation-routing
