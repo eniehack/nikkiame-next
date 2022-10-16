@@ -52,8 +52,7 @@ Route::post('/signup', function(Request $request) {
     $user->ulid = (string) Ulid::generate();
     $user->save();
 
-    return response('Hello World', 201)
-        ->header('Content-Type', 'text/plain');
+    return redirect('/signin');
 });
 
 Route::get('/signin',function(){
