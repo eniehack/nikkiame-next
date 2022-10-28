@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Post;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -98,5 +99,38 @@ Route::get('/', function(Request $request){
     }
 
 });
+Route::get('/post',function(Request $request){
+    if($request->session()->has('name')) {
+        return view('post');
+    } else{
+        return redirect('/signin');
+    }
+});
 
- //https://laravel.com/docs/9.x/authentication#password-confirmation-routing
+Route::post('/post', function(Request $request){
+    if(!$request->session()->has('name')){
+        return redirect('/signin');
+    }
+    $validator = Validator::make($request->all(), [
+        "content" => ["required"],
+    ]);
+    if($validator -> fails()){
+        return redirect('/post')->withErrors($validator)->withInput();
+    }
+
+    $post = new Post();
+    if( ! $request->filled("title")) {
+        $now = new DateTime();
+        $post->title = $now->format("Y-m-d");
+    } else {
+        $post->title = $request->string('title');
+    }
+    $post->content = $request->string('content');
+    $post->author = $request->session()->get('ulid');;
+    $post->id = (string) Ulid::generate();;
+    $post->is_draft = false;
+    $post->scope = 0;
+    $post->save();
+    return response('Created', 201)
+    ->header('Content-Type', 'text/plain');
+});
