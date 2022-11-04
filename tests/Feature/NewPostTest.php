@@ -41,7 +41,7 @@ class NewPostTest extends TestCase
                         ->withSession(["name" => $this->user->name, "ulid" => $this->user->ulid, "uid" => $this->user->user_id])
                         ->post('/posts', $array);
 
-        $postResponse -> assertStatus(200);
+        $postResponse -> assertStatus(201);
     }
 
     public function test_post_is_success_without_title(){
@@ -54,7 +54,7 @@ class NewPostTest extends TestCase
                         ->withSession(["name" => $this->user->name, "ulid" => $this->user->ulid, "uid" => $this->user->user_id])
                         ->post('/posts', $array);
 
-        $postResponse -> assertStatus(200);
+        $postResponse -> assertStatus(201);
     }
 
     public function test_post_is_failed(){
