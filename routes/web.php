@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,6 +28,10 @@ Route::post('/signup',[SignupController::class,'post'] );
 Route::get('/signin',[SigninController::class,'get'] );
 Route::post('/signin',[SigninController::class,'post'] );
 
+Route::resource('posts', PostController::class)->only([
+    'create', 'store'
+]);
+
 Route::get('/', function(Request $request){
     if($request->session()->has('name')) {
         return view('timeline', ['name' => $request->session()->get('name')]);
@@ -34,39 +39,4 @@ Route::get('/', function(Request $request){
         return view('welcome');
     }
 
-});
-Route::get('/post',function(Request $request){
-    if($request->session()->has('name')) {
-        return view('post');
-    } else{
-        return redirect('/signin');
-    }
-});
-
-Route::post('/post', function(Request $request){
-    if(!$request->session()->has('name')){
-        return redirect('/signin');
-    }
-    $validator = Validator::make($request->all(), [
-        "content" => ["required"],
-    ]);
-    if($validator -> fails()){
-        return redirect('/post')->withErrors($validator)->withInput();
-    }
-
-    $post = new Post();
-    if( ! $request->filled("title")) {
-        $now = new DateTime();
-        $post->title = $now->format("Y-m-d");
-    } else {
-        $post->title = $request->string('title');
-    }
-    $post->content = $request->string('content');
-    $post->author = $request->session()->get('ulid');;
-    $post->id = (string) Ulid::generate();;
-    $post->is_draft = false;
-    $post->scope = 0;
-    $post->save();
-    return response('Created', 201)
-    ->header('Content-Type', 'text/plain');
 });
