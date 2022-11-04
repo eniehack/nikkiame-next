@@ -22,12 +22,12 @@ class NewPostTest extends TestCase
     public function test_get_correctly(){
         $response = $this->actingAs($this->user)
                         ->withSession(["name" => $this->user->name, "ulid" => $this->user->ulid, "uid" => $this->user->user_id])
-                        ->get('/post');
+                        ->get('/posts/create');
         $response->assertStatus(200);
     }
 
     public function test_get_without_session(){
-        $response = $this->get('/post');
+        $response = $this->get('/posts/create');
         $response -> assertRedirect('/signin');
     }
 
@@ -39,9 +39,9 @@ class NewPostTest extends TestCase
 
         $postResponse = $this->actingAs($this->user)
                         ->withSession(["name" => $this->user->name, "ulid" => $this->user->ulid, "uid" => $this->user->user_id])
-                        ->post('/post', $array);
+                        ->post('/posts', $array);
 
-        $postResponse -> assertStatus(201);
+        $postResponse -> assertStatus(200);
     }
 
     public function test_post_is_success_without_title(){
@@ -52,9 +52,9 @@ class NewPostTest extends TestCase
 
         $postResponse = $this->actingAs($this->user)
                         ->withSession(["name" => $this->user->name, "ulid" => $this->user->ulid, "uid" => $this->user->user_id])
-                        ->post('/post', $array);
+                        ->post('/posts', $array);
 
-        $postResponse -> assertStatus(201);
+        $postResponse -> assertStatus(200);
     }
 
     public function test_post_is_failed(){
@@ -65,9 +65,9 @@ class NewPostTest extends TestCase
 
         $postResponse = $this->actingAs($this->user)
                         ->withSession(["name" => $this->user->name, "ulid" => $this->user->ulid, "uid" => $this->user->user_id])
-                        ->post('/post', $array);
+                        ->post('/posts', $array);
 
-        $postResponse -> assertRedirect('/post');
+        $postResponse -> assertRedirect('/posts/create');
     }
 
     public function test_expired_session(){
@@ -77,7 +77,7 @@ class NewPostTest extends TestCase
         ];
 
         $postResponse = $this->actingAs($this->user)
-                        ->post('/post', $array);
+                        ->post('/posts', $array);
 
         $postResponse -> assertRedirect('/signin');
     }

@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Post;
-
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\SignupController;
 use Illuminate\Support\Facades\Hash;
 use Ulid\Ulid;
+use App\Http\Controllers\SigninController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,75 +22,15 @@ use Ulid\Ulid;
 |
 */
 
-Route::get('/signup', function () {
-    return view('signup');
-});
+Route::get('/signup',[SignupController::class,'get'] );
+Route::post('/signup',[SignupController::class,'post'] );
 
-// name: required, max(20)
-// pass: required, minlength
-// uid: user_id, unique, max(15), min(1)
-Route::post('/signup', function(Request $request) {
+Route::get('/signin',[SigninController::class,'get'] );
+Route::post('/signin',[SigninController::class,'post'] );
 
-    $validator = Validator::make($request->all(), [
-        "name" => ["required","max:20"],
-        "uid" => ["required","max:15","min:1","regex:/^[0-9a-z._]+$/","unique:App\Models\User,user_id"],
-        "pass" => ["required","min:8"]
-    ]);
-
-    if ($validator->fails()) {
-        return redirect('/signup')->withErrors($validator)->withInput();
-    }
-
-    $name=$request->string('name');
-    $pass=$request->string('pass');
-    $uid=$request->string('uid');
-
-    $user = new User;
-
-    $user->name = $name;
-    $user->password = Hash::make($pass);
-    //$user->password = password_hash($pass, PASSWORD_ARGON2ID, ['memory_cost' => 65536, 'time_cost' => 4, 'threads' => 1]);
-    $user->user_id = $uid;
-    $user->ulid = (string) Ulid::generate();
-    $user->save();
-
-    return redirect('/signin');
-});
-
-Route::get('/signin',function(){
-    return view('signin');
-});
-
-Route::post('/signin',function(Request $request){
-
-    $validator = Validator::make($request->all(), [
-        "uid" => ["required"],
-        "pass" => ["required"]
-    ]);
-
-    if ($validator->fails()) {
-        return redirect('/signin')->withErrors($validator)->withInput();
-    }
-    $pass=$request->string('pass');
-    $uid=$request->string('uid');
-
-    if (Auth::attempt(['user_id' => $uid, 'password' => $pass])) {
-        // Authentication was successful...
-        $request->session()->regenerate();
-        $request->session()->put('uid',$uid);
-
-        $user = User::where('user_id', $uid)->first();
-        $request->session()->put('name',$user->name);
-        $request->session()->put('ulid',$user->ulid);
-
-
-        return redirect('/');
-    }else{
-        return redirect('/signin')->withErrors([
-                'pass' => ['The provided password does not match our records.']
-            ])->withInput();
-    }
-});
+Route::resource('posts', PostController::class)->only([
+    'create', 'store'
+]);
 
 Route::get('/', function(Request $request){
     if($request->session()->has('name')) {
@@ -98,39 +39,4 @@ Route::get('/', function(Request $request){
         return view('welcome');
     }
 
-});
-Route::get('/post',function(Request $request){
-    if($request->session()->has('name')) {
-        return view('post');
-    } else{
-        return redirect('/signin');
-    }
-});
-
-Route::post('/post', function(Request $request){
-    if(!$request->session()->has('name')){
-        return redirect('/signin');
-    }
-    $validator = Validator::make($request->all(), [
-        "content" => ["required"],
-    ]);
-    if($validator -> fails()){
-        return redirect('/post')->withErrors($validator)->withInput();
-    }
-
-    $post = new Post();
-    if( ! $request->filled("title")) {
-        $now = new DateTime();
-        $post->title = $now->format("Y-m-d");
-    } else {
-        $post->title = $request->string('title');
-    }
-    $post->content = $request->string('content');
-    $post->author = $request->session()->get('ulid');;
-    $post->id = (string) Ulid::generate();;
-    $post->is_draft = false;
-    $post->scope = 0;
-    $post->save();
-    return response('Created', 201)
-    ->header('Content-Type', 'text/plain');
 });

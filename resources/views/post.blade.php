@@ -18,7 +18,7 @@
     </div>
     @endif
 
-<form action="/post" method="post">
+<form action="/posts/create" method="post">
         @csrf
         <div>
         <label for="title">Title</label>
