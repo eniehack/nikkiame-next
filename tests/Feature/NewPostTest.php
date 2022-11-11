@@ -10,6 +10,9 @@ use App\Models\User;
 
 class NewPostTest extends TestCase
 {
+
+    use RefreshDatabase;
+
     public function setup() :void {
         parent::setUp();
         $this->user = User::factory()->create();
