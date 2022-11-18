@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 use App\Models\Post;
+use App\Models\User;
 use \DateTime;
 use Ulid\Ulid;
+use League\CommonMark\CommonMarkConverter;
 
 class PostController extends Controller
 {
@@ -28,7 +31,7 @@ class PostController extends Controller
     public function create(Request $request)
     {
         if($request->session()->has('name')) {
-            return view('post');
+            return view('post/create');
         } else{
             return redirect('/signin');
         }
@@ -59,15 +62,15 @@ class PostController extends Controller
         } else {
             $post->title = $request->string('title');
         }
+        $post_id = (string) Ulid::generate();
         $post->content = $request->string('content');
-        $post->author = $request->session()->get('ulid');;
-        $post->id = (string) Ulid::generate();;
+        $post->author = $request->session()->get('ulid');
+        $post->id = $post_id;
         $post->is_draft = false;
         $post->scope = 0;
         $post->save();
 
-        return response('Created', 201)
-            ->header('Content-Type', 'text/plain');
+        return Redirect::route("posts.show", ["post" => $post_id], 201);
     }
 
     /**
@@ -76,9 +79,17 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        //
+        $converter = new CommonMarkConverter();
+        $author = User::find($post->author);
+        return view('post/show',['title' => $post -> title ,
+                                'content' => $post -> content ,
+                                'created_at' => $post -> created_at ,
+                                'updated_at' => $post -> updated_at ,
+                                'author' => $author,
+                                'converter' => $converter
+                            ]);
     }
 
     /**
