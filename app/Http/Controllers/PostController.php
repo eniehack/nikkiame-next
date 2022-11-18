@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\User;
 use \DateTime;
 use Ulid\Ulid;
+use League\CommonMark\CommonMarkConverter;
 
 class PostController extends Controller
 {
@@ -80,12 +81,14 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $converter = new CommonMarkConverter();
         $author = User::find($post->author);
         return view('post/show',['title' => $post -> title ,
                                 'content' => $post -> content ,
                                 'created_at' => $post -> created_at ,
                                 'updated_at' => $post -> updated_at ,
-                                'author' => $author
+                                'author' => $author,
+                                'converter' => $converter
                             ]);
     }
 

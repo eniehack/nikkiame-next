@@ -15,7 +15,7 @@
             <p>更新日: <time>{{ $updated_at }}</time></p>
         </aside>
         <div>
-            {{$content}}
+            {!! $converter->convertToHtml($content) !!}
         </div>
     </article>
 </body>

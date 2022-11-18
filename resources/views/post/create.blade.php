@@ -28,8 +28,9 @@
         <label for="content">Content</label>
         <textarea name="content" id="" cols="30" rows="10" required></textarea>
         </div>
+        <p><a href="https://commonmark.org/help/">markdownの書き方</a></p>
         <button type="submit">submit</button>
-   </form>
+</form>
 
 </body>
 </html>
