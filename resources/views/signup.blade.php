@@ -1,36 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>signup</title>
-</head>
-<body>
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+@extends('layouts.base')
+
+@section('title')
+Sign up
+@endsection
+
+@section('main')
+   @if ($errors->any())
+        <div class="row">
+            <div class="card-panel  red lighten-1 m5">
+                <div class="card-content white-text">
+                    <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
     @endif
-    <form action="/signup" method="post">
+
+    <form action="/signup" method="post" class="row">
         @csrf
-        <div>
-        <label for="name">name</label>
-        <input type="text" name="name" required>
+        <div class="col s12">
+            <div class="input-field">
+                <label for="name">名前</label>
+                <input type="text" name="name" data-length="20" required>
+                <span class="helper-text" data-error="wrong" data-success="right">
+                    本名である必要はありません。
+                    20文字以下である必要があります。
+                </span>
+            </div>
         </div>
-        <div>
-        <label for="uid">user id</label>
-        <input type="text" name="uid" required>
+        <div class="col s12">
+            <div class="input-field">
+                <label for="uid">ユーザID</label>
+                <input type="text" name="uid" data-length="15" required>
+                <span class="helper-text" data-error="wrong" data-success="right">
+                    アルファベット小文字、数字、ドット(.)、アンダーバー（_）で構成され、
+                    15文字以内である必要があります。
+                </span>
+            </div>
         </div>
-        <div>
-        <label for="pass">password</label>
-        <input type="password" name="pass" required>
+        <div class="col s12">
+            <div class="input-field">
+                <label for="pass">パスワード</label>
+                <input type="password" name="pass" required>
+                <span class="helper-text" data-error="wrong" data-success="right">
+                    8文字以上である必要があります。
+                </span>
+            </div>
         </div>
-        <button type="submit">submit</button>
-   </form>
-</body>
-</html>
+
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+            登録
+            <i class="material-icons right">send</i>
+        </button>
+    </form>
+@endsection
