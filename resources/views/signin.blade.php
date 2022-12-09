@@ -1,32 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>signin</title>
-</head>
-<body>
-        @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+@extends('layouts.base')
+
+@section('title')
+Sign in
+@endsection
+
+@section('main')
+    @if ($errors->any())
+        <div class="row">
+            <div class="card-panel  red lighten-1 m5">
+                <div class="card-content white-text">
+                    <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
     @endif
-    <form action="/signin" method="post">
+    <form action="/signin" method="post" class="row">
         @csrf
-        <div>
-        <label for="uid">user id</label>
-        <input type="text" name="uid" required>
+        <div class="col s12">
+            <div class="input-field">
+                <label for="uid">ユーザID</label>
+                <input type="text" name="uid" required>
+            </div>
         </div>
-        <div>
-        <label for="pass">password</label>
-        <input type="password" name="pass" required>
+        <div class="col s12">
+            <div class="input-field">
+                <label for="pass">パスワード</label>
+                <input type="password" name="pass" required>
+            </div>
         </div>
-        <button type="submit">submit</button>
-   </form>
-</body>
-</html>
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+            ログイン
+            <i class="material-icons right">send</i>
+        </button>
+    </form>
+@endsection
