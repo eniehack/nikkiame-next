@@ -10,7 +10,7 @@
     <title>@yield('title') - nikkiame</title>
 </head>
 <body>
-    <header></header>
+    <header>@include('partial.header')</header>
     <main class="container">
         @yield('main')
     </main>
