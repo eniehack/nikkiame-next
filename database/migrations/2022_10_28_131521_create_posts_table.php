@@ -14,7 +14,6 @@ return new class extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->softDeletes();
             $table->char('id',26);
             $table->primary('id');
             $table->char('author',26);
@@ -28,7 +27,7 @@ return new class extends Migration
             $table->integer('scope');
             $table->boolean('is_draft');
             $table->timestamps();
-
+            $table->softDeletes();
         });
     }
 
