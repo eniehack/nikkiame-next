@@ -171,7 +171,15 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
-        //
+    public function destroy(Request $request, Post $post) {
+        if ($request->session()->has('ulid')) {
+            $requested_ulid = $request->session()->get('ulid');
+            if (isset($requested_ulid)&&($requested_ulid == $post->user->ulid)){
+                $post->delete();
+                return redirect('/');
+            }
+            else return response("forbidden",403);
+        }
+        else return response("forbidden",403);
     }
 }

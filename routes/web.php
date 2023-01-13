@@ -29,7 +29,7 @@ Route::get('/signin',[SigninController::class,'get'] );
 Route::post('/signin',[SigninController::class,'post'] );
 
 Route::resource('posts', PostController::class)->only([
-    'create', 'store','show','edit','update'
+    'create', 'store','show','edit','update','destroy'
 ]);
 
 Route::get('/', function(Request $request){

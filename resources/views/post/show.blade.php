@@ -16,7 +16,8 @@
             {!! $converter->convertToHtml($post->content) !!}
         </div>
         @if($editButtonFlag)
-        <a href="./{{$post->id}}/edit" class="waves-effect waves-light btn-large">
+        <div class="row">
+        <div class="col">
             <i class="material-icons right">edit</i>
             編集
         </a>
