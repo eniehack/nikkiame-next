@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
+            $table->softDeletes();
             $table->char('id',26);
             $table->primary('id');
             $table->char('author',26);
@@ -22,7 +23,6 @@ return new class extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-
             $table->string('title',20);
             $table->string('content');
             $table->integer('scope');
@@ -37,8 +37,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(){
         Schema::dropIfExists('posts');
     }
 };
