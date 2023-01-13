@@ -46,6 +46,6 @@ class Post extends Model
 
     protected $keyType = 'string';
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,"author");
     }
 }
