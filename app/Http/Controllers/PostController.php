@@ -10,6 +10,8 @@ use App\Models\User;
 use \DateTime;
 use Ulid\Ulid;
 use League\CommonMark\CommonMarkConverter;
+use function PHPUnit\Framework\isFalse;
+use function PHPUnit\Framework\returnArgument;
 
 class PostController extends Controller
 {
@@ -18,8 +20,7 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         //
     }
 
@@ -28,8 +29,7 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         if($request->session()->has('name')) {
             return view('post/create');
         } else{
@@ -43,8 +43,7 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         if (!$request->session()->has('name')) {
             return redirect('/signin');
         }
@@ -79,17 +78,27 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
-    {
+    public function show(Request $request, Post $post) {
+        $requestedUser = $request->session()->get('ulid');
         $converter = new CommonMarkConverter();
         $author = User::find($post->author);
+        $editButtonFlag = false;
+        if(isset($requestedUser) && ($author -> ulid == $requestedUser)){
+            $editButtonFlag = true;
+        }
+        /*
         return view('post/show',['title' => $post -> title ,
                                 'content' => $post -> content ,
                                 'created_at' => $post -> created_at ,
                                 'updated_at' => $post -> updated_at ,
                                 'author' => $author,
-                                'converter' => $converter
+                                'converter' => $converter,
+                                'editButtonFlag' => $editButtonFlag
                             ]);
+                            */
+        return view ('post/show', ['post' => $post,
+                                    'converter' => $converter,
+                                    'editButtonFlag' => $editButtonFlag]);
     }
 
     /**
@@ -98,9 +107,21 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
+    public function edit(Request $request, Post $post) {
+        if ($request->session()->has('ulid')) {
+            $requested_ulid = $request->session()->get('ulid');
+            if (isset($requested_ulid)&&($requested_ulid == $post->user->ulid)){
+                return view('post/edit',['title' => $post -> title ,
+                                'content' => $post -> content ,
+                                'post_id' => $post -> id,
+                            ]);
+                    }else{
+                        return response("forbidden",403);
+                    }
+
+        }else{
+            return response("forbidden",403);
+        }
     }
 
     /**
@@ -110,9 +131,38 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, Post $post) {
+
+        if ($request->session()->has('ulid')) {
+
+            $requested_ulid = $request->session()->get('ulid');
+            if (isset($requested_ulid)&&($requested_ulid == $post-> user->ulid)){
+
+                $validator = Validator::make($request->all(), [
+                    "title" => ["required"],
+                    "content" => ["required"],
+                ]);
+
+                $post_id = $post -> id;
+
+                if ($validator->fails()){
+                    return redirect('/posts'.'/'.$post_id.'/edit')->withErrors($validator)->withInput();
+                }
+                $post->title = $request->string('title');
+                $post->content = $request->string('content');
+                $post->save();
+                return Redirect::route("posts.show", ["post" => $post_id], 201);
+
+            }else{
+                return response("forbidden",403);
+            }
+
+        }else{
+            return response("forbidden",403);
+        }
+
+        // $post -> title = $request -> string()
+
     }
 
     /**
@@ -121,8 +171,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         //
     }
 }
