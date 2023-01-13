@@ -16,10 +16,25 @@
             {!! $converter->convertToHtml($post->content) !!}
         </div>
         @if($editButtonFlag)
-        <a href="./{{$post->id}}/edit" class="waves-effect waves-light btn-large">
+        <div class="row">
+        <div class="col">
+        <a href="{{route('posts.edit',['post' => $post->id])}}" class="waves-effect waves-light btn">
             <i class="material-icons right">edit</i>
             編集
         </a>
+        </div>
+        <div class="col">
+        <form action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="post">
+            @csrf
+            @method('delete')
+            <button type="submit" class="waves-effect waves-light btn red" onclick='return window.confirm("削除しますか？");'>
+            <i class="material-icons right">delete</i>
+            削除
+        </button>
+        </form>
+        </div>
+        </div>
+
         @endif
     </article>
 @endsection

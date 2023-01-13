@@ -22,13 +22,12 @@ return new class extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-
             $table->string('title',20);
             $table->string('content');
             $table->integer('scope');
             $table->boolean('is_draft');
             $table->timestamps();
-
+            $table->softDeletes();
         });
     }
 
@@ -37,8 +36,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(){
         Schema::dropIfExists('posts');
     }
 };

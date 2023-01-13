@@ -22,7 +22,7 @@
 
 
 
-<form action="/posts/{{$post_id}}" method="post" class="row">
+<form action="{{ route('posts.update', ['post' => $post_id]) }}" method="post" class="row">
     @method('PUT')
         @csrf
         <div class="col s12">
@@ -44,7 +44,7 @@
                 </span>
             </div>
         </div>
-        <button type="submit" class="waves-effect waves-light btn-large">
+        <button type="submit" class="waves-effect waves-light btn">
             <i class="material-icons right">send</i>
             更新
         </button>
