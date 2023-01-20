@@ -49,4 +49,8 @@ class Post extends Model
     public function user(){
         return $this->belongsTo(User::class,"author");
     }
+
+    public function passphrase() {
+        return $this->hasOne(PostPassphrase::class, "post_id");
+    }
 }

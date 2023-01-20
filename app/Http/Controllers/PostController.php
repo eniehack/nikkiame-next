@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PostPassphrase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Post;
 use App\Models\User;
+use App\Enums\PostScope;
 use \DateTime;
 use Ulid\Ulid;
 use League\CommonMark\CommonMarkConverter;
@@ -49,6 +52,7 @@ class PostController extends Controller
         }
         $validator = Validator::make($request->all(), [
             "content" => ["required"],
+            "scope" => ["required", "integer"],
         ]);
         if ($validator->fails()){
             return redirect('/posts/create')->withErrors($validator)->withInput();
@@ -66,8 +70,22 @@ class PostController extends Controller
         $post->author = $request->session()->get('ulid');
         $post->id = $post_id;
         $post->is_draft = false;
-        $post->scope = 0;
+        $post->scope = $request->enum("scope", PostScope::class);
         $post->save();
+
+        if (PostScope::Private === $request->enum("scope", PostScope::class)) {
+            $privatepost_validator = Validator::make($request->all(), [
+                "pass_phrase" => ["required", "min:8", "regex:^[a-zA-Z0-9\#\&\:\;\$\%\@\^\`\~\\\.\,\|\-\_\<\>\*\+\!\?\=\{\}\(\)\[\]\"\'\ ]+$"],
+            ]);
+            if ($privatepost_validator->fails()){
+                return redirect('/posts/create')->withErrors($privatepost_validator)->withInput();
+            }
+
+            $post_passphrase = new PostPassphrase();
+            $post_passphrase->post_id = $post_id;
+            $post_passphrase->passphrase = Hash::make($request->string("pass_phrase"));
+            $post_passphrase->save();
+        }
 
         return Redirect::route("posts.show", ["post" => $post_id], 201);
     }
