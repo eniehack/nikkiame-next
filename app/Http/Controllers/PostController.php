@@ -75,7 +75,7 @@ class PostController extends Controller
 
         if (PostScope::Private === $request->enum("scope", PostScope::class)) {
             $privatepost_validator = Validator::make($request->all(), [
-                "pass_phrase" => ["required", "min:8", "regex:^[a-zA-Z0-9\#\&\:\;\$\%\@\^\`\~\\\.\,\|\-\_\<\>\*\+\!\?\=\{\}\(\)\[\]\"\'\ ]+$"],
+                "pass_phrase" => ["required", "min:8", "regex:/^[a-zA-Z0-9\#\&\:\;\$\%\@\^\`\~\\\.\,\|\-\_\<\>\*\+\!\?\=\{\}\(\)\[\]\"\'\ ]+$/"],
             ]);
             if ($privatepost_validator->fails()){
                 return redirect('/posts/create')->withErrors($privatepost_validator)->withInput();
@@ -104,6 +104,12 @@ class PostController extends Controller
         if(isset($requestedUser) && ($author -> ulid == $requestedUser)){
             $editButtonFlag = true;
         }
+        if (! $editButtonFlag) {
+            if(!($request->session()->has(($post->id).'_access_allowed'))) {
+                return redirect()->route("post.passphrase.get" , ["post" => $post -> id]);
+            }
+        }
+
         /*
         return view('post/show',['title' => $post -> title ,
                                 'content' => $post -> content ,
