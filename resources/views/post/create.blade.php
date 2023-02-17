@@ -4,6 +4,22 @@
 新規投稿
 @endsection
 
+@section('head_js')
+<script>
+    function switchDisplayPassPhrase(){
+        let private_btn = document.getElementById("scope_private");
+        let pass_phrase = document.getElementById("pass_phrase");
+        if(private_btn.checked){
+            pass_phrase.setAttribute("type", "text");
+            pass_phrase.setAttribute("required", "");
+        } else{
+            pass_phrase.setAttribute("type", "hidden");
+            pass_phrase.removeAttribute("required");
+        }
+    };
+</script>
+@endsection
+
 @section('main')
 <h1>New Post</h1>
     @if ($errors->any())
@@ -43,6 +59,22 @@
                 </span>
             </div>
         </div>
+            <div>
+                <label for="scope_public">
+                    <input type="radio" name="scope" value="0" id="scope_public" onclick="switchDisplayPassPhrase();" checked>
+                    <span>公開する</span>
+                </label>
+            </div>
+            <div>
+                <label for="scope_private">
+                    <input type="radio" name="scope" value="1" id="scope_private" onclick="switchDisplayPassPhrase();" >
+                    <span>パスワードを付ける</span>
+                </label>
+            </div>
+            <div class="input-field">
+                <label for="pass_phrase" >パスワードを入力</label>
+                <input type="hidden" name="pass_phrase" id="pass_phrase" >
+            </div>
         <button type="submit" class="waves-effect waves-light btn-large">
             <i class="material-icons right">send</i>
             投稿
