@@ -22,7 +22,7 @@
 
 
 
-<form action="{{ route('posts.update', ['post' => $post_id]) }}" method="post" class="row">
+<form action="{{ route('posts.update', ['user' => $user_id, 'post' => $post_id]) }}" method="post" class="row">
     @method('PUT')
         @csrf
         <div class="col s12">

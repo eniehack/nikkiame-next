@@ -29,12 +29,15 @@ Route::post('/signup',[SignupController::class,'post'] );
 Route::get('/signin',[SigninController::class,'get'] );
 Route::post('/signin',[SigninController::class,'post']);
 
-Route::resource('posts', PostController::class)->only([
-    'create', 'store','show','edit','update','destroy'
-]);
+Route::get('/posts/new',[PostController::class,'create'])->name('posts.create');
+Route::get('/@{user:user_id}/p/{post}',[PostController::class,'show'])->name('posts.show');
+Route::get('/@{user:user_id}/p/{post}/edit',[PostController::class,'edit'])->name('posts.edit');
+Route::post('/posts/new',[PostController::class,'store'])->name('posts.store');
+Route::put('/@{user:user_id}/p/{post}/edit',[PostController::class,'update'])->name('posts.update');
+Route::delete('/@{user:user_id}/p/{post}/',[PostController::class,'destroy'])->name('posts.destroy');
 
-Route::get('/posts/{post}/pass_phrase',[PostPassphraseConfirmationController::class,'get'] )->name('post.passphrase.get');
-Route::post('/posts/{post}/pass_phrase',[PostPassphraseConfirmationController::class,'post'])->name('post.passphrase.post');
+Route::get('/@{user:user_id}/p/{post}/pass_phrase',[PostPassphraseConfirmationController::class,'get'] )->name('post.passphrase.get');
+Route::post('/@{user:user_id}/p/{post}/pass_phrase',[PostPassphraseConfirmationController::class,'post'])->name('post.passphrase.post');
 
 Route::get('/', function(Request $request){
     if($request->session()->has('name')) {
@@ -45,3 +48,4 @@ Route::get('/', function(Request $request){
 
 });
 
+Route::get('/@{user:user_id}',[UserProfileController::class,'get']);
