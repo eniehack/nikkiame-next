@@ -16,19 +16,20 @@ class ShowPostTest extends TestCase
 
     public function setup() : void {
         parent::setUp();
-        $user = User::factory()->create();
+        $this->user = User::factory()->create();
         $this->post = Post::factory()->create([
-            "author" => $user->ulid
+            "author" => $this->user->ulid,
+            "scope" => 0,
         ]);
     }
     public function test_existing_post() : void {
-        $response = $this->get('/posts'."/".$this->post->id);
+        $response = $this->get("/@{$this->user->user_id}/p/{$this->post->id}");
 
         $response->assertStatus(200);
     }
     public function test_invalid_post() : void
     {
-        $response = $this->get('/posts'."/"."01AAAAAAAAAAAAAAAAAAAAAAAA");
+        $response = $this->get("/@{$this->user->user_id}/p/01AAAAAAAAAAAAAAAAAAAAAAAA");
 
         $response->assertStatus(404);
     }

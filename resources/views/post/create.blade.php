@@ -4,7 +4,7 @@
 新規投稿
 @endsection
 
-@section('head_js')
+@section('head')
 <script>
     function switchDisplayPassPhrase(){
         let private_btn = document.getElementById("scope_private");
@@ -38,7 +38,7 @@
 
 
 
-<form action="/posts" method="post" class="row">
+<form action="{{route('posts.store')}}" method="post" class="row">
         @csrf
         <div class="col s12">
             <div class="input-field">

@@ -8,7 +8,7 @@
 <p>
 この投稿は、パスワードを入力しなければなりません。
 </p>
-<form action="{{ route('post.passphrase.post', ['post' => $post_id]) }}" method="post" class="row">
+<form action="{{ route('post.passphrase.post', ['user' => $user_id, 'post' => $post_id]) }}" method="post" class="row">
         @csrf
         <input type="hidden" name="post_id" value="{{$post_id}}">
         <div class="col s12">

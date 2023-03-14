@@ -55,7 +55,7 @@ class PostController extends Controller
             "scope" => ["required", "integer"],
         ]);
         if ($validator->fails()){
-            return redirect('/posts/create')->withErrors($validator)->withInput();
+            return Redirect::route('posts.create')->withErrors($validator)->withInput();
         }
 
         $post = new Post();
@@ -73,12 +73,14 @@ class PostController extends Controller
         $post->scope = $request->enum("scope", PostScope::class);
         $post->save();
 
+        $user = User::find($request->session()->get('ulid'));
+
         if (PostScope::Private === $request->enum("scope", PostScope::class)) {
             $privatepost_validator = Validator::make($request->all(), [
                 "pass_phrase" => ["required", "min:8", "regex:/^[a-zA-Z0-9\#\&\:\;\$\%\@\^\`\~\\\.\,\|\-\_\<\>\*\+\!\?\=\{\}\(\)\[\]\"\'\ ]+$/"],
             ]);
             if ($privatepost_validator->fails()){
-                return redirect('/posts/create')->withErrors($privatepost_validator)->withInput();
+                return Redirect::route('posts.create')->withErrors($privatepost_validator)->withInput();
             }
 
             $post_passphrase = new PostPassphrase();
@@ -87,7 +89,7 @@ class PostController extends Controller
             $post_passphrase->save();
         }
 
-        return Redirect::route("posts.show", ["post" => $post_id], 201);
+        return Redirect::route("posts.show", ["post" => $post_id, "user" => $user->user_id], 201);
     }
 
     /**
@@ -96,17 +98,16 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Post $post) {
+    public function show(Request $request, User $user, Post $post) {
         $requestedUser = $request->session()->get('ulid');
         $converter = new CommonMarkConverter();
-        $author = User::find($post->author);
         $editButtonFlag = false;
-        if(isset($requestedUser) && ($author -> ulid == $requestedUser)){
+        if(isset($requestedUser) && ($user -> ulid == $requestedUser)){
             $editButtonFlag = true;
         }
-        if (! $editButtonFlag) {
+        if (! $editButtonFlag && $post->scope === 1) {
             if(!($request->session()->has(($post->id).'_access_allowed'))) {
-                return redirect()->route("post.passphrase.get" , ["post" => $post -> id]);
+                return redirect()->route("post.passphrase.get" , ["post" => $post -> id, "user" => $user->user_id]);
             }
         }
 
@@ -115,7 +116,7 @@ class PostController extends Controller
                                 'content' => $post -> content ,
                                 'created_at' => $post -> created_at ,
                                 'updated_at' => $post -> updated_at ,
-                                'author' => $author,
+                                'author' => $user,
                                 'converter' => $converter,
                                 'editButtonFlag' => $editButtonFlag
                             ]);
@@ -131,11 +132,12 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, Post $post) {
+    public function edit(Request $request, User $user, Post $post) {
         if ($request->session()->has('ulid')) {
             $requested_ulid = $request->session()->get('ulid');
-            if (isset($requested_ulid)&&($requested_ulid == $post->user->ulid)){
+            if (isset($requested_ulid)&&($requested_ulid == $user->ulid)){
                 return view('post/edit',['title' => $post -> title ,
+                                "user_id" => $user->user_id,
                                 'content' => $post -> content ,
                                 'post_id' => $post -> id,
                             ]);
@@ -155,7 +157,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post) {
+    public function update(Request $request, User $user, Post $post) {
 
         if ($request->session()->has('ulid')) {
 
@@ -170,12 +172,12 @@ class PostController extends Controller
                 $post_id = $post -> id;
 
                 if ($validator->fails()){
-                    return redirect('/posts'.'/'.$post_id.'/edit')->withErrors($validator)->withInput();
+                    return Redirect::route('posts.edit', ['user' => $user->user_id, 'post' => $post_id])->withErrors($validator)->withInput();
                 }
                 $post->title = $request->string('title');
                 $post->content = $request->string('content');
                 $post->save();
-                return Redirect::route("posts.show", ["post" => $post_id], 201);
+                return Redirect::route("posts.show", ['user' => $user->user_id, "post" => $post_id], 201);
 
             }else{
                 return response("forbidden",403);
@@ -195,10 +197,10 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Post $post) {
+    public function destroy(Request $request, User $user, Post $post) {
         if ($request->session()->has('ulid')) {
             $requested_ulid = $request->session()->get('ulid');
-            if (isset($requested_ulid)&&($requested_ulid == $post->user->ulid)){
+            if (isset($requested_ulid)&&($requested_ulid == $user->ulid)){
                 $post->delete();
                 return redirect('/');
             }
