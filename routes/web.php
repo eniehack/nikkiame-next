@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Ulid\Ulid;
 use App\Http\Controllers\SigninController;
 use App\Http\Controllers\PostPassphraseConfirmationController;
+use App\Http\Controllers\UserProfileController;
 
 /*
 |--------------------------------------------------------------------------

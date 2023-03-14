@@ -4,7 +4,7 @@
 新規投稿
 @endsection
 
-@section('head_js')
+@section('head')
 <script>
     function switchDisplayPassPhrase(){
         let private_btn = document.getElementById("scope_private");
