@@ -16,6 +16,8 @@ use League\CommonMark\CommonMarkConverter;
 use function PHPUnit\Framework\isFalse;
 use function PHPUnit\Framework\returnArgument;
 
+use Illuminate\Support\Facades\Log;
+
 class PostController extends Controller
 {
     /**
@@ -58,6 +60,15 @@ class PostController extends Controller
             return Redirect::route('posts.create')->withErrors($validator)->withInput();
         }
 
+        if (PostScope::Private === $request->enum("scope", PostScope::class)) {
+            $privatepost_validator = Validator::make($request->all(), [
+                "pass_phrase" => ["required", "min:8", "regex:/^[a-zA-Z0-9\#\&\:\;\$\%\@\^\`\~\\\.\,\|\-\_\<\>\*\+\!\?\=\{\}\(\)\[\]\"\'\ ]+$/"],
+            ]);
+            if ($privatepost_validator->fails()){
+                return Redirect::route('posts.create')->withErrors($privatepost_validator)->withInput();
+            }
+        }
+
         $post = new Post();
         if ( ! $request->filled("title")) {
             $now = new DateTime();
@@ -72,23 +83,14 @@ class PostController extends Controller
         $post->is_draft = false;
         $post->scope = $request->enum("scope", PostScope::class);
         $post->save();
-
         $user = User::find($request->session()->get('ulid'));
 
         if (PostScope::Private === $request->enum("scope", PostScope::class)) {
-            $privatepost_validator = Validator::make($request->all(), [
-                "pass_phrase" => ["required", "min:8", "regex:/^[a-zA-Z0-9\#\&\:\;\$\%\@\^\`\~\\\.\,\|\-\_\<\>\*\+\!\?\=\{\}\(\)\[\]\"\'\ ]+$/"],
-            ]);
-            if ($privatepost_validator->fails()){
-                return Redirect::route('posts.create')->withErrors($privatepost_validator)->withInput();
-            }
-
             $post_passphrase = new PostPassphrase();
             $post_passphrase->post_id = $post_id;
             $post_passphrase->passphrase = Hash::make($request->string("pass_phrase"));
             $post_passphrase->save();
         }
-
         return Redirect::route("posts.show", ["post" => $post_id, "user" => $user->user_id], 201);
     }
 
