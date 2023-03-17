@@ -49,4 +49,4 @@ Route::get('/', function(Request $request){
 
 });
 
-Route::get('/@{user:user_id}',[UserProfileController::class,'get']);
+Route::get('/@{user:user_id}',[UserProfileController::class,'get'])->name("user.profile");
