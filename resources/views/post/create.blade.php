@@ -17,6 +17,7 @@
             pass_phrase.removeAttribute("required");
         }
     };
+    window.onload = switchDisplayPassPhrase;
 </script>
 @endsection
 
@@ -43,14 +44,14 @@
         <div class="col s12">
             <div class="input-field">
                 <label for="title">タイトル</label>
-                <input type="text" name="title">
+                <input type="text" name="title" value="{{ old('title') }}">
                 <span class="helper-text" data-error="wrong" data-success="right">空白で投稿すると「2022-11-09」のようなタイトルになります。</span>
             </div>
         </div>
         <div class="col s12">
             <div class="input-field">
                 <label for="content">本文</label>
-                <textarea name="content" class="materialize-textarea" cols="30" rows="10" required></textarea>
+                <textarea name="content" class="materialize-textarea" cols="30" rows="10" required>{{ old('content') }}</textarea>
                 <span class="helper-text" data-error="wrong" data-success="right">
                     <a href="https://commonmark.org/help/">
                         Markdown記法
@@ -67,7 +68,7 @@
             </div>
             <div>
                 <label for="scope_private">
-                    <input type="radio" name="scope" value="1" id="scope_private" onclick="switchDisplayPassPhrase();" >
+                    <input type="radio" name="scope" value="1" id="scope_private" onclick="switchDisplayPassPhrase();"  {{ old("scope") == 1 ? "checked" : "" }} >
                     <span>パスワードを付ける</span>
                 </label>
             </div>
