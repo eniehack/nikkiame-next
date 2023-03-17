@@ -8,7 +8,7 @@
 <article>
         <h1>{{ $post->title }}</h1>
         <aside>
-            <p><i class="small material-icons">person</i> <span>{{ $post->user->name }}</span></p>
+            <p><i class="small material-icons">person</i> <a href="{{ route('user.profile', ['user' => $post->user->user_id ]) }}">{{ $post->user->name }}</a></p>
             <p><i class="small material-icons">date_range</i> <time>{{ $post->created_at }}</time></p>
             <p><i class="small material-icons">sync</i> <time>{{ $post->updated_at }}</time></p>
         </aside>
