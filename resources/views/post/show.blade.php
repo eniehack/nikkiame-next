@@ -1,12 +1,33 @@
 @extends('layouts.base')
 
+@php
+use App\Enums\PostScope;
+@endphp
+
 @section('title')
 {{ $post->title }}
 @endsection
 
+@section('head')
+<style>
+    #title {
+        margin-top: 50px;
+    }
+    #title h1 {
+        display: inline;
+    }
+</style>
+@endsection
+
 @section('main')
 <article>
+    <div id="title">
         <h1>{{ $post->title }}</h1>
+        @if ($post->scope === PostScope::Private->value)
+            <i class="material-icons">lock</i>
+        @endif
+    </div>
+        
         <aside>
             <p><i class="small material-icons">person</i> <a href="{{ route('user.profile', ['user' => $post->user->user_id ]) }}">{{ $post->user->name }}</a></p>
             <p><i class="small material-icons">date_range</i> <time>{{ $post->created_at }}</time></p>
