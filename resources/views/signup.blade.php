@@ -19,7 +19,7 @@ Sign up
         </div>
     @endif
 
-    <form action="/signup" method="post" class="row">
+    <form action="{{ url()->full() }}" method="post" class="row">
         @csrf
         <div class="col s12">
             <div class="input-field">
