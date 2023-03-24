@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Illuminate\Support\Facades\URL;
 
 class SignupTest extends TestCase
 {
@@ -14,11 +15,23 @@ class SignupTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function setup() :void {
+        parent::setUp();
+        $this->url = URL::temporarySignedRoute(
+                'signup.get', now()->addMinutes(30)
+        );
+    }
+
+    public function test_get()
+    {
+        $response = $this->get($this->url);
+        $response->assertStatus(200);
+    }
+    public function test_no_signature()
     {
         $response = $this->get('/signup');
 
-        $response->assertStatus(200);
+        $response->assertStatus(403);
     }
 
     public function test_user_data_post()
@@ -28,7 +41,7 @@ class SignupTest extends TestCase
             'pass' => 'samplePassword',
             'uid' => 'uid',
         ];
-        $response = $this->post('/signup', $array);
+        $response = $this->post($this->url, $array);
 
         $response -> assertRedirect('/signin');
     }
@@ -41,16 +54,16 @@ class SignupTest extends TestCase
             'uid' => 'uid',
         ];
 
-        $this->post('/signup', $array);
+        $this->post($this->url, $array);
 
-        $response = $this->post('/signup', $array);
+        $response = $this->post($this->url, $array);
 
-        $response->assertRedirect('/signup');
+        $response->assertRedirect($this->url);
     }
 
     public function test_name_empty_post()
     {
-        $resp = $this->post('/signup', [
+        $resp = $this->post($this->url, [
             'pass' => 'password',
             'uid' => 'test',
         ]);
@@ -60,7 +73,7 @@ class SignupTest extends TestCase
 
     public function test_pass_empty_post()
     {
-        $resp = $this->post('/signup', [
+        $resp = $this->post($this->url, [
             'name' => 'testUser',
             'uid' => 'test',
         ]);
@@ -70,12 +83,11 @@ class SignupTest extends TestCase
 
     public function test_uid_empty_post()
     {
-        $resp = $this->post('/signup', [
+        $resp = $this->post($this->url, [
             'name' => 'testUser',
             'pass' => 'testPassword',
         ]);
 
-        $resp->assertRedirect('/signup');
+        $resp->assertRedirect($this->url);
     }
 }
-https://vscode.dev/liveshare/3ACA5092AB03752D94EF3C7AC5C7E400B1EE

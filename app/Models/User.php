@@ -39,6 +39,7 @@ class User extends Authenticatable
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'is_admin' => 'boolean'
     ];
 
     protected $guarded = [

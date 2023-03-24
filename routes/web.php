@@ -12,6 +12,7 @@ use Ulid\Ulid;
 use App\Http\Controllers\SigninController;
 use App\Http\Controllers\PostPassphraseConfirmationController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\InvitationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ use App\Http\Controllers\UserProfileController;
 |
 */
 
-Route::get('/signup',[SignupController::class,'get'] );
+Route::get('/signup',[SignupController::class,'get'] )->name('signup.get');
 Route::post('/signup',[SignupController::class,'post'] );
 
 Route::get('/signin',[SigninController::class,'get'] );
@@ -50,3 +51,4 @@ Route::get('/', function(Request $request){
 });
 
 Route::get('/@{user:user_id}',[UserProfileController::class,'get'])->name("user.profile");
+Route::get('/admin/invitation',[InvitationController::class,'get']);

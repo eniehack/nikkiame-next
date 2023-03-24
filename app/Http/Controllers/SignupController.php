@@ -11,10 +11,16 @@ use Ulid\Ulid;
 
 class SignupController extends Controller
 {
-    public function get(){
+    public function get(Request $request){
+        if (! $request->hasValidSignature()) {
+            abort(403);
+        }
         return view('signup');
     }
     public function post(Request $request){
+        if (! $request->hasValidSignature()) {
+            abort(403);
+        }
         $validator = Validator::make($request->all(), [
             "name" => ["required","max:20"],
             "uid" => ["required","max:15","min:1","regex:/^[0-9a-z._]+$/","unique:App\Models\User,user_id"],
@@ -22,7 +28,7 @@ class SignupController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('/signup')->withErrors($validator)->withInput();
+            return redirect(url()->full())->withErrors($validator)->withInput();
         }
 
         $name=$request->string('name');
