@@ -1,6 +1,8 @@
 <nav>
     <div class="nav-wrapper">
-        <a href="/" class="brand-logo">Nikkiame</a>
+        <div style="margin-left: 20px;">
+            <a href="/" class="brand-logo">Nikkiame</a>
+        </div>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="/signin">Signin</a></li>
             <li><a href="/signup">Signup</a></li>

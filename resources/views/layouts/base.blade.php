@@ -1,3 +1,9 @@
+@section('head')
+<style>
+
+</style>
+@endsection
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,12 +15,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - nikkiame</title>
     @yield('head')
+    <style>
+        footer{
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <header>@include('partial.header')</header>
     <main class="container">
         @yield('main')
     </main>
-    <footer></footer>
+    <footer class="page-footer">
+        <div class="container">
+            <a class="grey-text text-lighten-3" href="https://github.com/eniehack/nikkiame-next">
+                <img src="{{ asset('/assets/image/github-mark-white.png') }}" alt="GitHub" height="24" width="24">
+            </a>
+            <p>
+                &copy;2023 Nikkiame Developers
+            </p>
+        </div>
+        </footer>
+
 </body>
 </html>
