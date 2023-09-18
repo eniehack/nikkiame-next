@@ -22,6 +22,12 @@
             width: 100%;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems, {});
+        });
+    </script>
 </head>
 <body>
     <header>@include('partial.header')</header>
