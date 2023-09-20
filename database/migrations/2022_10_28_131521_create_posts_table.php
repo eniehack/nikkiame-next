@@ -23,7 +23,7 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('title',20);
-            $table->string('content');
+            $table->text('content');
             $table->integer('scope');
             $table->boolean('is_draft');
             $table->timestamps();
