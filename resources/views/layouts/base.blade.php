@@ -21,6 +21,12 @@
             bottom: 0;
             width: 100%;
         }
+        .wrapper {
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 100px;
+            box-sizing: border-box;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -30,20 +36,21 @@
     </script>
 </head>
 <body>
-    <header>@include('partial.header')</header>
-    <main class="container">
-        @yield('main')
-    </main>
-    <footer class="page-footer">
-        <div class="container">
-            <a class="grey-text text-lighten-3" href="https://github.com/eniehack/nikkiame-next">
-                <img src="{{ asset('/assets/image/github-mark-white.png') }}" alt="GitHub" height="24" width="24">
-            </a>
-            <p>
-                &copy;2023 Nikkiame Developers
-            </p>
-        </div>
+    <div class="wrapper">
+        <header>@include('partial.header')</header>
+        <main class="container">
+            @yield('main')
+        </main>
+        <footer class="page-footer">
+            <div class="container">
+                <a class="grey-text text-lighten-3" href="https://github.com/eniehack/nikkiame-next">
+                    <img src="{{ asset('/assets/image/github-mark-white.png') }}" alt="GitHub" height="24" width="24">
+                </a>
+                <p>
+                    &copy;2023 Nikkiame Developers
+                </p>
+            </div>
         </footer>
-
+    </div>
 </body>
 </html>
