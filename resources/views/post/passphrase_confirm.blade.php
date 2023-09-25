@@ -7,7 +7,7 @@
     <meta property="og:title" content="パスワード付き投稿" />
     <meta property="og:description" content="この投稿は、パスワードを入力しなければなりません。" />
     <meta property="og:site_name" content="Nikkiame" />
-    <meta property="og:image" content="{{ asset('/assets/image/sweets_cinnamon_stick.png') }}" />
+    <meta property="og:image" content="{{ asset('/assets/image/nikkiame-ogp-image.png') }}" />
 @endsection
 
 @section('title')

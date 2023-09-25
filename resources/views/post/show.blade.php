@@ -15,7 +15,7 @@ use App\Enums\PostScope;
     <meta property="og:title" content="{{ $post->title }}" />
     <meta property="og:description" content="{{ mb_substr($post->content, 0, 100) }}" />
     <meta property="og:site_name" content="Nikkiame" />
-    <meta property="og:image" content="{{ asset('/assets/image/sweets_cinnamon_stick.png') }}" />
+    <meta property="og:image" content="{{ asset('/assets/image/nikkiame-ogp-image.png') }}" />
 
 <style>
     #title {
