@@ -9,6 +9,14 @@ use App\Enums\PostScope;
 @endsection
 
 @section('head')
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta name="description" content="{{ mb_substr($post->content, 0, 100) }}">
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="{{ $post->title }}" />
+    <meta property="og:description" content="{{ mb_substr($post->content, 0, 100) }}" />
+    <meta property="og:site_name" content="Nikkiame" />
+    <meta property="og:image" content="{{ asset('/assets/image/sweets_cinnamon_stick.png') }}" />
+
 <style>
     #title {
         margin-top: 50px;
