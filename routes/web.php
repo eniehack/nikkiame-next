@@ -28,7 +28,7 @@ use App\Http\Controllers\InvitationController;
 Route::get('/signup',[SignupController::class,'get'] )->name('signup.get');
 Route::post('/signup',[SignupController::class,'post'] );
 
-Route::get('/signin',[SigninController::class,'get'] );
+Route::get('/signin',[SigninController::class,'get'] )->name('signin.get');
 Route::post('/signin',[SigninController::class,'post']);
 
 Route::get('/posts/new',[PostController::class,'create'])->name('posts.create');
