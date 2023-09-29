@@ -16,6 +16,6 @@
 2. install [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extentions
 3. open this repo in Dev Container
 4. run `composer i`
-5. run `php artisan generate:key --env=dev`
+5. run `php artisan key:generate --env=dev`
 6. run `php artisan migrate --env=dev`
 7. run `php artisan serve --env=dev`
