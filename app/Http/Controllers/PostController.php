@@ -12,11 +12,20 @@ use App\Models\User;
 use App\Enums\PostScope;
 use \DateTime;
 use Ulid\Ulid;
-use League\CommonMark\CommonMarkConverter;
+use Embed\Embed;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\Embed\EmbedExtension;
+use League\CommonMark\Extension\Embed\EmbedRenderer;
+use League\CommonMark\Extension\Embed\Bridge\OscaroteroEmbedAdapter;
+use League\CommonMark\Renderer\HtmlDecorator;
+use League\CommonMark\MarkdownConverter;
+
 use function PHPUnit\Framework\isFalse;
 use function PHPUnit\Framework\returnArgument;
 
 use Illuminate\Support\Facades\Log;
+use League\CommonMark\Extension\Embed\Embed as EmbedEmbed;
 
 class PostController extends Controller
 {
@@ -102,7 +111,16 @@ class PostController extends Controller
      */
     public function show(Request $request, User $user, Post $post) {
         $requestedUser = $request->session()->get('ulid');
-        $converter = new CommonMarkConverter();
+        $config = [
+            'embed' => [
+                'adapter' => new OscaroteroEmbedAdapter(),
+            ],
+        ];
+        $environment = new Environment($config);
+        $environment->addExtension(new CommonMarkCoreExtension());
+        $environment->addExtension(new EmbedExtension());
+        $environment->addRenderer(Embed::class, new HtmlDecorator(new EmbedRenderer(), 'div', ['class' => 'embeded-content']));
+        $converter = new MarkdownConverter($environment);
         $editButtonFlag = false;
         if(isset($requestedUser) && ($user -> ulid == $requestedUser)){
             $editButtonFlag = true;
