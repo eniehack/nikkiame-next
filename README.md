@@ -1,3 +1,9 @@
+## install
+
+### requirements
+
+- php >= 8.1
+
 ## for developer
 
 ### Debian / Ubuntu
@@ -27,10 +33,10 @@ DB_DATABASE="$(pwd)/database/test.sqlite" php artisan config:cache --env=dev
 
 6. run migration
 ```shell-session
-php artisan migrate --env=dev
+DB_DATABASE="$(pwd)/database/test.sqlite" php artisan migrate --env=dev
 ```
 
 7. run app
 ```shell-session
-php artisan serve --env=dev
+DB_DATABASE="$(pwd)/database/test.sqlite" php artisan serve --env=dev
 ```
