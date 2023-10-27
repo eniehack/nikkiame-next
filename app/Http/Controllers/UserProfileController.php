@@ -16,7 +16,10 @@ class UserProfileController extends Controller
         $requestedUser = $request->session()->get('ulid');
 
         if (!(isset($requestedUser) && ($user -> ulid == $requestedUser))){
-            $user_all_posts = $user_all_posts->where('scope',PostScope::Public);
+            $user_all_posts = $user_all_posts->where([
+                ['scope', PostScope::Public],
+                ['is_draft', false],
+            ]);
         }
         $user_all_posts = $user_all_posts->orderBy("created_at","desc")->get();
 

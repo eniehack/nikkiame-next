@@ -43,6 +43,9 @@ use App\Enums\PostScope;
                         {{$user_each_post -> title}}
                     </a>
                 </h3>
+                    @if ($user_each_post->is_draft)
+                        <i class="material-icons">insert_drive_file</i>
+                    @endif
                 @if ($user_each_post->scope === PostScope::Private->value)
                     <i class="material-icons">lock</i>
                 @endif

@@ -31,6 +31,9 @@ use App\Enums\PostScope;
 <article>
     <div id="title">
         <h1>{{ $post->title }}</h1>
+        @if ($post->is_draft)
+            <i class="material-icons">insert_drive_file</i>
+        @endif
         @if ($post->scope === PostScope::Private->value)
             <i class="material-icons">lock</i>
         @endif

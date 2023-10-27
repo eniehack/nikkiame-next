@@ -46,7 +46,19 @@
         </div>
         <button type="submit" class="waves-effect waves-light btn">
             <i class="material-icons right">send</i>
-            更新
+            @if ($is_draft)
+                記事を公開
+            @else
+                更新
+            @endif
+        </button>
+        <button type="submit" class="waves-effect waves-yellow btn" name="draft_btn">
+            <i class="material-icons right">insert_drive_file</i>
+            @if ($is_draft)
+                下書きを保存
+            @else
+                下書きに戻す
+            @endif
         </button>
 </form>
 @endsection

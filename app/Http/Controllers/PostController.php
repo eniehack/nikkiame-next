@@ -89,7 +89,7 @@ class PostController extends Controller
         $post->content = $request->string('content');
         $post->author = $request->session()->get('ulid');
         $post->id = $post_id;
-        $post->is_draft = false;
+        $post->is_draft = $request->has('draft_btn');
         $post->scope = $request->enum("scope", PostScope::class);
         $post->save();
         $user = User::find($request->session()->get('ulid'));
@@ -125,7 +125,10 @@ class PostController extends Controller
         if(isset($requestedUser) && ($user -> ulid == $requestedUser)){
             $editButtonFlag = true;
         }
-        if (! $editButtonFlag && $post->scope === 1) {
+        if($post->is_draft && ! $editButtonFlag){
+            return response("NOT FOUND", 404);
+        }
+        if (! $editButtonFlag && $post->scope === PostScope::Private->value) {
             if(!($request->session()->has(($post->id).'_access_allowed'))) {
                 return redirect()->route("post.passphrase.get" , ["post" => $post -> id, "user" => $user->user_id]);
             }
@@ -158,8 +161,9 @@ class PostController extends Controller
             if (isset($requested_ulid)&&($requested_ulid == $user->ulid)){
                 return view('post/edit',['title' => $post -> title ,
                                 "user_id" => $user->user_id,
-                                'content' => $post -> content ,
-                                'post_id' => $post -> id,
+                                'content' => $post->content,
+                                'post_id' => $post->id,
+                                'is_draft'=> $post->is_draft,
                             ]);
                     }else{
                         return response("forbidden",403);
@@ -194,6 +198,7 @@ class PostController extends Controller
                 if ($validator->fails()){
                     return Redirect::route('posts.edit', ['user' => $user->user_id, 'post' => $post_id])->withErrors($validator)->withInput();
                 }
+                $post->is_draft = $request->has('draft_btn');
                 $post->title = $request->string('title');
                 $post->content = $request->string('content');
                 $post->save();

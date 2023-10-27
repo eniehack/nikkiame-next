@@ -80,5 +80,9 @@
             <i class="material-icons right">send</i>
             投稿
         </button>
+        <button type="submit" class="waves-effect waves-yellow btn-large" name="draft_btn">
+            <i class="material-icons right">insert_drive_file</i>
+            下書きを保存
+        </button>
 </form>
 @endsection
