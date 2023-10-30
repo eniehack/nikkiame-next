@@ -89,12 +89,11 @@ class PostController extends Controller
         $post->content = $request->string('content');
         $post->author = $request->session()->get('ulid');
         $post->id = $post_id;
-        $post->is_draft = $request->has('draft_btn');
         $post->scope = $request->enum("scope", PostScope::class);
         $post->save();
         $user = User::find($request->session()->get('ulid'));
 
-        if (PostScope::Private === $request->enum("scope", PostScope::class)) {
+        if ($post->scope === PostScope::Private) {
             $post_passphrase = new PostPassphrase();
             $post_passphrase->post_id = $post_id;
             $post_passphrase->passphrase = Hash::make($request->string("pass_phrase"));
@@ -125,10 +124,10 @@ class PostController extends Controller
         if(isset($requestedUser) && ($user -> ulid == $requestedUser)){
             $editButtonFlag = true;
         }
-        if($post->is_draft && ! $editButtonFlag){
+        if(($post->scope === PostScope::Draft)  && ! $editButtonFlag){
             return response("NOT FOUND", 404);
         }
-        if (! $editButtonFlag && $post->scope === PostScope::Private->value) {
+        if (! $editButtonFlag && $post->scope === PostScope::Private) {
             if(!($request->session()->has(($post->id).'_access_allowed'))) {
                 return redirect()->route("post.passphrase.get" , ["post" => $post -> id, "user" => $user->user_id]);
             }
@@ -163,7 +162,7 @@ class PostController extends Controller
                                 "user_id" => $user->user_id,
                                 'content' => $post->content,
                                 'post_id' => $post->id,
-                                'is_draft'=> $post->is_draft,
+                                'scope'=> $post->scope
                             ]);
                     }else{
                         return response("forbidden",403);
@@ -198,9 +197,18 @@ class PostController extends Controller
                 if ($validator->fails()){
                     return Redirect::route('posts.edit', ['user' => $user->user_id, 'post' => $post_id])->withErrors($validator)->withInput();
                 }
-                $post->is_draft = $request->has('draft_btn');
                 $post->title = $request->string('title');
                 $post->content = $request->string('content');
+                $post->scope = $request->enum("scope", PostScope::class);
+                if ($post->scope === PostScope::Private) {
+                    $post_passphrase = PostPassphrase::find($post->id);
+                    if (!isset($post_passphrase)){
+                        $post_passphrase = new PostPassphrase();
+                        $post_passphrase->post_id = $post_id;
+                    }
+                    $post_passphrase->passphrase = Hash::make($request->string("pass_phrase"));
+                    $post_passphrase->save();
+                }
                 $post->save();
                 return Redirect::route("posts.show", ['user' => $user->user_id, "post" => $post_id], 201);
 
