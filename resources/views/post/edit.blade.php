@@ -44,9 +44,10 @@
                 </span>
             </div>
         </div>
+        @include('partial.scope_selector')
         <button type="submit" class="waves-effect waves-light btn">
             <i class="material-icons right">send</i>
             更新
         </button>
-</form>
+    </form>
 @endsection

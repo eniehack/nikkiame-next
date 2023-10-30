@@ -19,7 +19,6 @@ class PostFactory extends Factory
         return [
             'title' => fake()->realText(20),
             'author' => fake()->unique()->regexify("[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}"),
-            "is_draft" => false,
             "content" => fake()->realText(),
             "created_at" => now(),
             "updated_at" => now(),

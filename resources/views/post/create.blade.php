@@ -1,24 +1,7 @@
 @extends('layouts.base')
 
 @section('title')
-新規投稿
-@endsection
-
-@section('head')
-<script>
-    function switchDisplayPassPhrase(){
-        let private_btn = document.getElementById("scope_private");
-        let pass_phrase = document.getElementById("pass_phrase");
-        if(private_btn.checked){
-            pass_phrase.setAttribute("type", "text");
-            pass_phrase.setAttribute("required", "");
-        } else{
-            pass_phrase.setAttribute("type", "hidden");
-            pass_phrase.removeAttribute("required");
-        }
-    };
-    window.onload = switchDisplayPassPhrase;
-</script>
+    新規投稿
 @endsection
 
 @section('main')
@@ -36,8 +19,6 @@
             </div>
         </div>
     @endif
-
-
 
 <form action="{{route('posts.store')}}" method="post" class="row">
         @csrf
@@ -60,25 +41,10 @@
                 </span>
             </div>
         </div>
-            <div>
-                <label for="scope_public">
-                    <input type="radio" name="scope" value="0" id="scope_public" onclick="switchDisplayPassPhrase();" checked>
-                    <span>公開する</span>
-                </label>
-            </div>
-            <div>
-                <label for="scope_private">
-                    <input type="radio" name="scope" value="1" id="scope_private" onclick="switchDisplayPassPhrase();"  {{ old("scope") == 1 ? "checked" : "" }} >
-                    <span>パスワードを付ける</span>
-                </label>
-            </div>
-            <div class="input-field">
-                <label for="pass_phrase" >パスワードを入力</label>
-                <input type="hidden" name="pass_phrase" id="pass_phrase" >
-            </div>
-        <button type="submit" class="waves-effect waves-light btn-large">
+        @include('partial.scope_selector')   
+        <button type="submit" class="waves-effect waves-light btn">
             <i class="material-icons right">send</i>
             投稿
         </button>
-</form>
+    </form>
 @endsection

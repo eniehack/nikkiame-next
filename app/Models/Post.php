@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\PostScope;
 
 class Post extends Model
 {
@@ -18,7 +19,6 @@ class Post extends Model
     protected $fillable = [
         'title',
         'content',
-        'is_draft',
         'scope',
     ];
 
@@ -31,7 +31,7 @@ class Post extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'scope' => 'int',
+        'scope' => PostScope::class,
     ];
 
     protected $guarded = [
